@@ -1,0 +1,45 @@
+#' plot_token_counter
+#' @description  Renders a simple bar chart showing the most frequent words in a text variable. Along with being able to choose how many of the top terms to visualise, the user has the option to change some aesthetics, such as y axis text size and fill colour.
+#' @param data A tibble or data frame object
+#' @param text_var The text or message variable to analyse
+#' @param n Amount of top terms to visualise
+#' @param text_size How large should the y axis text be, this should also depend on the number of top terms selected
+#' @param fill What colour should the bar chart plot be
+#'
+#' @return Returns a simple bar chart displaying the top terms mentioned throughout any one message variable
+#' @export
+#'
+#' @examples
+#' plot_token_counter(data = data, text_var = message, n = 10, text_size = 15, fill = "steelblue")
+plot_token_counter <- function(data = data,
+                               text_var = text_var,
+                               n = n,
+                               text_size = text_size,
+                               fill = "") {
+
+  library(tidyverse)
+  text_var <- data %>%
+    dplyr::select({{text_var}})
+
+  stop_words <- tm::stopwords(kind = "smart")
+
+  tokens <- strsplit(tolower({{text_var}}), "\\W+")
+
+  freq_data <- data.frame(token = unlist(tokens), stringsAsFactors = FALSE)
+  freq_data <- transform(freq_data, token = gsub("[[:punct:]]", "", token))
+  freq_data <- data.frame(table(freq_data$token))
+
+  freq_data <- freq_data[order(-freq_data$Freq), ]
+  freq_data <- freq_data %>% dplyr::filter(!Var1 %in% stop_words) %>%
+    dplyr::rename(token = Var1)
+
+  # create the tokens plot
+  freq_data %>%
+    dplyr::slice_head(n = {{n}}) %>%
+    ggplot2::ggplot(ggplot2::aes(x = stats::reorder(token, Freq), y = Freq)) +
+    ggplot2::geom_bar(stat = "identity", fill = fill) +
+    ggplot2::labs(x = "Token", y = "Frequency") +
+    ggplot2::coord_flip() +
+    ggplot2::theme_minimal() +
+    ggplot2::theme(text = element_text(colour = "black", size = {{text_size}}))
+}
