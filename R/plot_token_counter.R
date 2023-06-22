@@ -1,10 +1,10 @@
 #' plot_token_counter
-#' @description  Renders a simple bar chart showing the most frequent words in a text variable. Along with being able to choose how many of the top terms to visualise, the user has the option to change some aesthetics, such as y axis text size and fill colour.
+#' @description  Renders a simple bar chart showing the most frequent words in a text variable. Along with being able to choose how many of the top terms to visualize, the user has the option to change some aesthetics, such as y axis text size and fill color.
 #' @param data A tibble or data frame object
 #' @param text_var The text or message variable to analyse
-#' @param n Amount of top terms to visualise
+#' @param n Amount of top terms to visualize
 #' @param text_size How large should the y axis text be, this should also depend on the number of top terms selected
-#' @param fill What colour should the bar chart plot be
+#' @param fill What color should the bar chart plot be
 #'
 #' @return Returns a simple bar chart displaying the top terms mentioned throughout any one message variable
 #' @export
