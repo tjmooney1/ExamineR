@@ -18,6 +18,7 @@ plot_group_vot_sentiment <- function(data = data,
                                      group_var = group,
                                      unit = c("day", "week", "month", "quarter", "year")){
 
+  library(tidyverse)
   unit <- match.arg(unit)
   sent_sym <- rlang::ensym(sentiment_var)
   date_sym <- rlang::ensym(date_var)

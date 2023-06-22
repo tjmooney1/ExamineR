@@ -16,6 +16,7 @@ plot_group_sentiment <- function(data = data,
                                  sentiment_var = sentiment,
                                  colours = sentiment_colours) {
 
+  library(tidyverse)
   sentiment_colours <- c("NEGATIVE" = "#8b0000",
                          "NEUTRAL" = "#808080",
                          "POSITIVE" = "#008b00")

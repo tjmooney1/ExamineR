@@ -22,8 +22,8 @@ plot_group_vot <- function(data = data,
                            plot_type = c("facet", "list"),
                            colour_mapping = NULL) {
 
+  library(tidyverse)
   unit <- match.arg(unit)
-
   date_sym <- rlang::ensym(date_var)
   group_sym <- rlang::ensym(group_var)
 
