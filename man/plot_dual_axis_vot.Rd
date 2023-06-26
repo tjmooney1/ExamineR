@@ -10,7 +10,7 @@ plot_dual_axis_vot(
   variable_one = variable_one,
   variable_two = variable_two,
   custom_colours = custom_colours,
-  unit = c("1 year", "1 quarter", "1 month", "2 weeks", "1 week", "1 day")
+  unit = c("1 year", "1 month", "2 weeks", "1 week", "1 day")
 )
 }
 \arguments{
@@ -21,12 +21,16 @@ plot_dual_axis_vot(
 \item{variable_one}{The first variable the user wants to plot}
 
 \item{variable_two}{The second variable, this one will be plotted on the second y axis}
+
+\item{custom_colours}{For if the user has a custom colour scale or map they wish to assign the two variables}
+
+\item{unit}{The unit of time the user wants to display when plotting, options are; "1 day", "1 week","2 weeks", "1 month", "1 year"}
 }
 \value{
 A ggplot, with two y axes showing the trend of both variables over time
 }
 \description{
-Plot two variables over time using two y axes
+Plot two variables over time using a dual axis time series method, levergaing two y axes
 }
 \examples{
 data \%>\% plot_dual_axis_vot(date_var = date, variable_one = cost, variable_two = impressions)

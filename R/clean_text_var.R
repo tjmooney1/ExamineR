@@ -17,7 +17,7 @@
 #' @export
 #'
 #' @examples
-#' data <- data %>% data clean_text_var(text_var = message, tolower = TRUE, hashtags = TRUE, mentions = TRUE, emojis = TRUE, punctuation = TRUE, digits = TRUE, remove_url = TRUE, clean_spaces = TRUE in_parallel = TRUE)
+#' data <- data %>% clean_text_var(text_var = clean_text, tolower = TRUE, remove_hashtags = TRUE, remove_mentions = TRUE, remove_emojis = TRUE, remove_punctuation = TRUE, remove_digits = TRUE, remove_url = TRUE, clean_spaces = TRUE, in_parallel = TRUE)
 clean_text_var <- function(data = data,
                           text_var = message,
                           tolower = TRUE,
@@ -39,32 +39,37 @@ clean_text_var <- function(data = data,
   web_regex <- paste0("[:graph:]*(?=(\\", domains, "/))", "|(?<=(\\", domains, "/))[:graph:]*(?![:alnum:])")
   domain_regex <- paste0("(\\", domains, "/)")
 
-  if (hashtags == TRUE) {
+  if (remove_hashtags == TRUE) {
     hashtags_regex <- c("(?<=#)[:graph:]*(?![:graph:])|(?<=#)[:graph:]*$", "#")
+    message("Removing hashtags from text variable")
   }
   else {
     hashtags_regex <- NULL
   }
-  if (mentions == TRUE) {
+  if (remove_mentions == TRUE) {
     mentions_regex <- c("(?<=@)[:graph:]*(?![:graph:])|(?<=@)[:graph:]*$", "@")
+    message("Removing user mentons from text variable")
   }
   else {
     mentions_regex <- NULL
   }
-  if (emojis == TRUE) {
+  if (remove_emojis == TRUE) {
     emojis_regex <- "[^\001-\177]"
+    message("Removing emojis from text variable")
   }
   else {
     emojis_regex <- NULL
   }
-  if (punctuation == TRUE) {
+  if (remove_punctuation == TRUE) {
     punctuation_regex <- "[:punct:]"
+    message("Removing punctuation from text variable")
   }
   else {
     punctuation_regex <- NULL
   }
-  if (digits == TRUE) {
+  if (remove_digits == TRUE) {
     digits_regex <- "[:digit:]"
+    message("Removing digits from text variable")
   }
   else {
     digits_regex <- NULL
@@ -73,6 +78,7 @@ clean_text_var <- function(data = data,
   all_regex <- character(length(names_regex))
   names(all_regex) <- names_regex
   if (tolower) {
+    message("Making all text lowercase")
     data <- data %>%
       dplyr::mutate(`:=`(!!text_quo, tolower(!!text_sym)))
   }
@@ -83,7 +89,6 @@ clean_text_var <- function(data = data,
 
     data <- data %>%
       dplyr::mutate(cut_id = dplyr::row_number(),cuts = cut(cut_id, future::availableCores() - 1))
-    message("Removing posts from data frame")
     data <- data %>%
       dplyr::group_split(cuts) %>%
       furrr::future_map_dfr(~.x %>%
@@ -94,17 +99,18 @@ clean_text_var <- function(data = data,
     future::plan(future::sequential())
   }
   else {
-    message("Removing posts from data frame")
     data <- data %>%
       dplyr::mutate(`:=`(!!text_quo, stringr::str_remove_all(!!text_sym, all_regex)), `:=`(!!text_quo, stringr::str_squish(!!text_sym)))
   }
   if (remove_url == TRUE) {
+    message("Removing urls from text variable")
     data <- data %>%
       dplyr::mutate(`:=`({{text_var}}, stringr::str_remove_all({{text_var}}, "htt(p|ps)\\S+"))) %>%
       dplyr::mutate(`:=`({{text_var}}, stringr::str_remove_all({{text_var}}, "[w]{3}\\.\\S+"))) %>%
       dplyr::mutate(`:=`({{text_var}}, stringr::str_remove_all({{text_var}}, "\\S+\\.[a-z]+\\S+")))
   }
         if (clean_spaces == TRUE) {
+          message("Cleaning whitespaces in text variable")
   data <- data %>%
      dplyr::mutate(`:=`({{text_var}},
   stringr::str_trim({{text_var }})), `:=`({{text_var}},
