@@ -1,0 +1,73 @@
+```{r echo=FALSE, out.width="30%", fig.align="center"}
+knitr::include_graphics(path = 'https://user-images.githubusercontent.com/102962437/247979697-0ec25433-d506-44d0-aa05-55d8ae8e3893.png')
+``` 
+
+---
+title: "" 
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{ExamineR_vignette}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r echo=FALSE}
+library(rmarkdown)
+library(knitr)
+```
+
+## Install ExamineR from GitHub 
+```{r setup, message=FALSE}
+devtools::install_github(repo = "tjmooney1/ExamineR",
+                        auth_token = "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")
+```
+
+ExamineR is a small package, made up of a variety of multi-purpose functions which aim to assist throughout the Exploratory Data Analysis stages, Data Processing and even Visualization
+
+Once installed from the GitHub repo using `devtools::install_github()`, simply load ExamineR in from the package library to get started
+```{r}
+library(ExamineR)
+```
+
+ExamineR for the most part, is a tool to assist users with Text Mining, Natural Language Processing(NLP) and Qualitative Data Analysis
+
+### Data Processing Functions
+Text data is typically unstructured and messy in nature, meaning that the user may want(and almost definitely should) clean any data before conducting any analysis.
+
+Often, performing cleaning steps on the text variable can mean writing multiple lines of code, involving REGEX and remembering syntax across many packages 
+
+ExamineR's `clean_text_var()` allows the user to perform a variety of cleaning steps as and when necessary
+```{r echo=TRUE, message=TRUE}
+ExamineR::clean_text_var(data = data, text_var = clean_text, tolower = TRUE, remove_hashtags = TRUE, remove_mentions = TRUE, remove_emojis = TRUE, remove_punctuation = TRUE, remove_digits = TRUE, remove_url = TRUE, clean_spaces = TRUE, in_parallel = TRUE)
+```
+
+
+### Plotting Functions
+
+Here are some typical use cases of how best to leverage the package. Lets take a look at the `plot_token_counter()` function that shows what terms are appearing most frequently throughout any one text variable
+```{r echo=FALSE, message=FALSE}
+library(tidyverse)
+data <- read_csv("~/My Drive/Share_Clients/data_science_project_work/microsoft/project_work/642_644_search_engine_ai_chatbot/642_phase_1/data/helper_data/landscaper_642_datav3.csv") %>% 
+  sample_n(10000)
+```
+```{r, echo=TRUE, message=FALSE}
+ExamineR::plot_token_counter(data = data, text_var = clean_text, n = 20, text_size = 13, fill = "#89CFF0")
+```
+
+When wanting to make a comparison between group variables, the user may want to count distributions across these groups. In this example, we'll use the `plot_group_sentiment()` function that shows us the sentiment breakdown of posts across the identified groups, in this case, clusters of conversation previously identified and labelled
+```{r echo=TRUE, message=FALSE}
+ExamineR::plot_group_sentiment(data = data, group_var = cluster_name, sentiment_var = sentiment)
+```
+
+The user may also want to visualize both the volume of posts and sentiment distribution across the data time frame. This can be done by making use of the `plot_group_vot_sentiment()` function
+```{r}
+ExamineR::plot_group_vot_sentiment(data = data, sentiment_var = sentiment, date_var = date, group_var = cluster_name, unit = "month")
+```
+

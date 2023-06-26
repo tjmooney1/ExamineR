@@ -1,9 +1,11 @@
 #' plot_dual_axis_vot
-#' @description Plot two variables over time using two y axes
+#' @description Plot two variables over time using a dual axis time series method, levergaing two y axes
 #' @param data A tibble or data frame object
 #' @param date_var The date variable ascribed to each observation
 #' @param variable_one The first variable the user wants to plot
 #' @param variable_two The second variable, this one will be plotted on the second y axis
+#' @param custom_colours For if the user has a custom colour scale or map they wish to assign the two variables
+#' @param unit The unit of time the user wants to display when plotting, options are; "1 day", "1 week","2 weeks", "1 month", "1 year"
 #'
 #' @return A ggplot, with two y axes showing the trend of both variables over time
 #' @export
@@ -15,7 +17,7 @@ plot_dual_axis_vot <- function(data = data,
                                variable_one = variable_one,
                                variable_two = variable_two,
                                custom_colours = custom_colours,
-                               unit = c("1 year", "1 quarter", "1 month", "2 weeks", "1 week", "1 day")) {
+                               unit = c("1 year", "1 month", "2 weeks", "1 week", "1 day")) {
 
   date_var <- dplyr::enexpr(date_var)
   variable_one <- dplyr::enexpr(variable_one)
@@ -31,25 +33,47 @@ plot_dual_axis_vot <- function(data = data,
   # calculates the scaling coefficient
   coeff <- max(max(summarised_data$mean_var1), max(summarised_data$mean_var2)) / min(max(summarised_data$mean_var1), max(summarised_data$mean_var2))
 
+  max_mean_var1 <- max(summarised_data$mean_var1, na.rm = TRUE)
+  max_mean_var2 <- max(summarised_data$mean_var2, na.rm = TRUE)
+
   # ensure to assign undefined variable names
   variable_one_name <- deparse(substitute(variable_one))
   variable_two_name <- deparse(substitute(variable_two))
 
-  plot <- ggplot2::ggplot(summarised_data, ggplot2::aes(x = date)) +
-    ggplot2::geom_line(ggplot2::aes(y = mean_var1, color = variable_one_name)) +
-    ggplot2::geom_line(ggplot2::aes(y = mean_var2 / coeff, color = variable_two_name)) +
-    ggplot2::theme_minimal() +
-    ggplot2::labs(title = "Dual Axes Time Series Plot", x = "Date", color = "") +
-    ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 35, vjust = 1),
-                   legend.title = ggplot2::element_blank(),
-                   panel.grid = ggplot2::element_blank(),
-                   text = ggplot2::element_text(color = "#000000", family = "Helvetica", size = 12),
-                   plot.title = ggplot2::element_text(face = "bold", size = 16, margin = ggplot2::margin(b = 10)),
-                   plot.subtitle = ggplot2::element_text(size = 14, margin = ggplot2::margin(b = 10))) +
-    ggplot2::scale_y_continuous(name = variable_one_name, sec.axis = ggplot2::sec_axis(~.*coeff, name = variable_two_name)) +
-    ggplot2::scale_x_date(date_breaks = unit) +
-    ggplot2::scale_color_manual(values = custom_colours)
+  if (max_mean_var2 > max_mean_var1) {
+    plot <- ggplot2::ggplot(summarised_data, ggplot2::aes(x = date)) +
+      ggplot2::geom_line(ggplot2::aes(y = mean_var1, color = variable_one_name)) +
+      ggplot2::geom_line(ggplot2::aes(y = mean_var2 / coeff, color = variable_two_name)) +
+      ggplot2::theme_minimal() +
+      ggplot2::labs(title = "Dual Axes Time Series Plot", x = "Date", color = "") +
+      ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 35, vjust = 1),
+                     legend.title = ggplot2::element_blank(),
+                     panel.grid = ggplot2::element_blank(),
+                     text = ggplot2::element_text(color = "#000000", family = "Helvetica", size = 12),
+                     plot.title = ggplot2::element_text(face = "bold", size = 16, margin = ggplot2::margin(b = 10)),
+                     plot.subtitle = ggplot2::element_text(size = 14, margin = ggplot2::margin(b = 10))) +
+      ggplot2::scale_y_continuous(name = variable_one_name, sec.axis = ggplot2::sec_axis(~.*coeff, name = variable_two_name)) +
+      ggplot2::scale_x_date(date_breaks = unit) +
+      ggplot2::scale_color_manual(values = custom_colours, breaks = c(variable_one_name,variable_two_name))
 
-  return(plot)
+    return(plot)
+  } else {
+    plot <- ggplot2::ggplot(summarised_data, ggplot2::aes(x = date)) +
+      ggplot2::geom_line(ggplot2::aes(y = mean_var1, color = variable_one_name)) +
+      ggplot2::geom_line(ggplot2::aes(y = mean_var2 * coeff, color = variable_two_name)) +
+      ggplot2::theme_minimal() +
+      ggplot2::labs(title = "Dual Axes Time Series Plot", x = "Date", color = "") +
+      ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 35, vjust = 1),
+                     legend.title = ggplot2::element_blank(),
+                     panel.grid = ggplot2::element_blank(),
+                     text = ggplot2::element_text(color = "#000000", family = "Helvetica", size = 12),
+                     plot.title = ggplot2::element_text(face = "bold", size = 16, margin = ggplot2::margin(b = 10)),
+                     plot.subtitle = ggplot2::element_text(size = 14, margin = ggplot2::margin(b = 10))) +
+      ggplot2::scale_y_continuous(name = variable_one_name, sec.axis = ggplot2::sec_axis(~. / coeff, name = variable_two_name)) +
+      ggplot2::scale_x_date(date_breaks = unit) +
+      ggplot2::scale_color_manual(values = custom_colours, breaks = c(variable_one_name,variable_two_name))
+
+    return(plot)
+  }
 }
 

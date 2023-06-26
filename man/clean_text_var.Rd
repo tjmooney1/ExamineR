@@ -48,5 +48,5 @@ The data object provided, with a cleaned text variable
 A function that performs a series of cleaning steps on a text variable. Useful for data processing when dealing with qualitative data
 }
 \examples{
-data <- data \%>\% data clean_text_var(text_var = message, tolower = TRUE, hashtags = TRUE, mentions = TRUE, emojis = TRUE, punctuation = TRUE, digits = TRUE, remove_url = TRUE, clean_spaces = TRUE in_parallel = TRUE)
+data <- data \%>\% clean_text_var(text_var = clean_text, tolower = TRUE, remove_hashtags = TRUE, remove_mentions = TRUE, remove_emojis = TRUE, remove_punctuation = TRUE, remove_digits = TRUE, remove_url = TRUE, clean_spaces = TRUE, in_parallel = TRUE)
 }
