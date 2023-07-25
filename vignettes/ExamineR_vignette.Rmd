@@ -25,8 +25,7 @@ library(knitr)
 
 ## Install ExamineR from GitHub 
 ```{r setup, message=FALSE}
-devtools::install_github(repo = "tjmooney1/ExamineR",
-                        auth_token = "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")
+devtools::install_github(repo = "tjmooney1/ExamineR")
 ```
 
 ExamineR is a small package, made up of a variety of multi-purpose functions which aim to assist throughout the Exploratory Data Analysis stages, Data Processing and even Visualization
