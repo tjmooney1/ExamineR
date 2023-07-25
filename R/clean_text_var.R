@@ -48,7 +48,7 @@ clean_text_var <- function(data = data,
   }
   if (remove_mentions == TRUE) {
     mentions_regex <- c("(?<=@)[:graph:]*(?![:graph:])|(?<=@)[:graph:]*$", "@")
-    message("Removing user mentons from text variable")
+    message("Removing user mentions from text variable")
   }
   else {
     mentions_regex <- NULL

@@ -26,7 +26,7 @@ library(knitr)
 ## Install ExamineR from GitHub 
 ```{r setup, message=FALSE}
 devtools::install_github(repo = "tjmooney1/ExamineR",
-                        auth_token = "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")
+                        auth_token = "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")
 ```
 
 ExamineR is a small package, made up of a variety of multi-purpose functions which aim to assist throughout the Exploratory Data Analysis stages, Data Processing and even Visualization
@@ -45,9 +45,8 @@ Often, performing cleaning steps on the text variable can mean writing multiple 
 
 ExamineR's `clean_text_var()` allows the user to perform a variety of cleaning steps as and when necessary
 ```{r echo=TRUE, message=TRUE}
-ExamineR::clean_text_var(data = data, text_var = clean_text, tolower = TRUE, remove_hashtags = TRUE, remove_mentions = TRUE, remove_emojis = TRUE, remove_punctuation = TRUE, remove_digits = TRUE, remove_url = TRUE, clean_spaces = TRUE, in_parallel = TRUE)
+clean_text_var(data = data, text_var = clean_text, tolower = TRUE, remove_hashtags = TRUE, remove_mentions = TRUE, remove_emojis = TRUE, remove_punctuation = TRUE, remove_digits = TRUE, remove_url = TRUE, clean_spaces = TRUE, in_parallel = TRUE)
 ```
-
 
 ### Plotting Functions
 
