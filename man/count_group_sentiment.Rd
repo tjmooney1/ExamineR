@@ -4,7 +4,11 @@
 \alias{count_group_sentiment}
 \title{count_group_sentiment}
 \usage{
-count_group_sentiment(data, group_var, sentiment_var)
+count_group_sentiment(
+  data = data,
+  group_var = group_var,
+  sentiment_var = sentiment_var
+)
 }
 \arguments{
 \item{data}{A tibble or data frame object}

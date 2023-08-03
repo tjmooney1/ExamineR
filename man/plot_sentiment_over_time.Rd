@@ -11,6 +11,7 @@ plot_sentiment_over_time(
   sentiment_colors = sentiment_colors,
   vline_date = NULL,
   unit = c("day", "week", "month", "quarter", "year"),
+  type = c("bar_chart", "line_graph"),
   ...
 )
 }
