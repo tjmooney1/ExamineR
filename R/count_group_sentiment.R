@@ -9,24 +9,23 @@
 #'
 #' @examples
 #' count_group_sentiment(data = data, group_var = audience, sentiment_var = sentiment)
-count_group_sentiment <- function(data,
-                                  group_var,
-                                  sentiment_var) {
+count_group_sentiment <- function(data = data,
+                                  group_var = group_var,
+                                  sentiment_var = sentiment_var) {
+
+  group_sym <- rlang::ensym(group_var)
+  sent_sym <- rlang::ensym(sentiment_var)
 
   grouped_data <- data %>%
-    group_by({{ group_var }}, {{ sentiment_var }}) %>%
-    summarise(count = n()) %>%
-    ungroup()
+    dplyr::group_by(!!group_sym, stringr::str_to_title(!!sent_sym)) %>%
+    dplyr::summarise(count = n()) %>%
+    dplyr::ungroup()
 
-  pivoted_data <- pivot_wider(grouped_data, names_from = {{ sentiment_var }},
-                              values_from = count, values_fill = 0)
+  grouped_data <- grouped_data %>%
+    dplyr::group_by(!!group_sym) %>%
+    dplyr::mutate(percent = count / sum(count) * 100) %>%
+    dplyr::mutate(percent = round(percent, digits = 1))
 
-  pivoted_data <- pivoted_data %>%
-    mutate(negative_percent = negative / (positive + neutral + negative) * 100,
-           neutral_percent = neutral / (positive + neutral + negative) * 100,
-           positive_percent = positive / (positive + neutral + negative) * 100)
+  return(grouped_data)
 
-
-  return(pivoted_data)
 }
-

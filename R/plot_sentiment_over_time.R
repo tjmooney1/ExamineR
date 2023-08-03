@@ -19,6 +19,7 @@ plot_sentiment_over_time <- function (data = data,
                                       sentiment_colors = sentiment_colors,
                                       vline_date = NULL,
                                       unit = c("day", "week", "month", "quarter", "year"),
+                                      type = c("bar_chart", "line_graph"),
                                       ...){
   time <- match.arg(unit)
   date_sym <- rlang::ensym(date_var)
@@ -26,6 +27,8 @@ plot_sentiment_over_time <- function (data = data,
 
   data <- data %>%
     dplyr::mutate(plot_date = lubridate::floor_date(!!date_sym, unit = time))
+
+  if (type == "bar_chart") {
 
   plot <- data %>%
     dplyr::count(plot_date, !!sentiment_sym) %>%
@@ -40,14 +43,40 @@ plot_sentiment_over_time <- function (data = data,
                    panel.grid.major = element_blank(),
                    panel.border = element_blank(),
                    axis.line = element_line(size = 0.5)) +
-    ggplot2::labs(x = NULL, y = "# of posts", title = "Sentiment Distribution over Time")
+    ggplot2::scale_fill_manual(aesthetics = c("fill", "colour"),
+                               values = c("NEGATIVE" = "#8b0000",
+                                          "NEUTRAL" = "#D3D0C9",
+                                          "POSITIVE" = "#008b00"),
+    ggplot2::labs(x = NULL, y = "Number of posts", title = "Sentiment Distribution over Time", colour = "Sentiment"))
+
+  } else {
+    plot <- data %>%
+      dplyr::count(plot_date, !!sentiment_sym) %>%
+      ggplot2::ggplot(ggplot2::aes(x = plot_date, y = n, colour = !!sentiment_sym)) +
+      ggplot2::geom_col(fill = "grey90", colour = "grey90") +
+      ggplot2::geom_line(linewidth = 1) +
+      ggplot2::theme_minimal() +
+      ggplot2::scale_x_date(date_breaks = "1 months", date_labels = "%b-%y") +
+      ggplot2::theme(plot.title = element_text(face = "bold"),
+                     plot.title.position = "plot",
+                     axis.text.x = element_text(angle = 0, vjust = 0.1),
+                     panel.grid.minor = element_blank(),
+                     panel.grid.major = element_blank(),
+                     panel.border = element_blank(),
+                     axis.line = element_line(size = 0.5)) +
+      ggplot2::scale_fill_manual(aesthetics = c("fill", "colour"),
+                                 values = c("NEGATIVE" = "#8b0000",
+                                            "NEUTRAL" = "#D3D0C9",
+                                            "POSITIVE" = "#008b00"),
+      ggplot2::labs(x = NULL, y = "Number of posts", title = "Sentiment Distribution over Time", colour = "Sentiment"))
+  }
 
   if (!is.null(vline_date)) {
     plot <- plot + ggplot2::geom_vline(xintercept = as.Date(vline_date), linetype = "dashed", size = 1, colour = "#6B695E")
   }
 
-  # Custom colors for sentiment categories
-  plot <- plot + ggplot2::scale_fill_manual(values = sentiment_colors)
+  #plot <- plot + ggplot2::scale_fill_manual(values = sentiment_colors)
 
   return(plot)
 }
+
