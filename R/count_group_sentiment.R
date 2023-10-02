@@ -8,6 +8,7 @@
 #' @export
 #'
 #' @examples
+#' sentiment_percentages <- (data = data, group_var = audience, sentiment_var = sentiment)
 #' count_group_sentiment(data = data, group_var = audience, sentiment_var = sentiment)
 count_group_sentiment <- function(data = data,
                                   group_var = group_var,

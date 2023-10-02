@@ -17,9 +17,15 @@ plot_group_sentiment <- function(data = data,
                                  colours = sentiment_colours) {
 
   library(tidyverse)
+
+  if(colours) {
+  sentiment_colours <- colours
+  }
+  else {
   sentiment_colours <- c("NEGATIVE" = "#8b0000",
-                         "NEUTRAL" = "#808080",
+                         "NEUTRAL" = "#D3D0C9",
                          "POSITIVE" = "#008b00")
+  }
   data %>%
     dplyr::count({{group_var}}, {{sentiment_var}}) %>%
     dplyr::add_count({{group_var}}, wt = n) %>%
