@@ -21,58 +21,56 @@ plot_group_vot <- function(data = data,
                            nrow = 2,
                            plot_type = c("facet", "list"),
                            colour_mapping = NULL) {
-
   library(tidyverse)
+
   unit <- match.arg(unit)
   date_sym <- rlang::ensym(date_var)
   group_sym <- rlang::ensym(group_var)
 
   if (plot_type == "facet") {
-    data <- data %>% dplyr::mutate(plot_date = lubridate::floor_date(!!date_sym, unit = unit),
-                                   facet_var = !!group_sym)
+    data <- data %>%
+      dplyr::mutate(plot_date = lubridate::floor_date(!!date_sym, unit = unit), facet_var = !!group_sym)
 
     plot <- data %>%
       dplyr::count(plot_date, facet_var) %>%
       ggplot2::ggplot(ggplot2::aes(x = plot_date, y = n, fill = facet_var)) +
-      ggplot2::geom_col() +
-      HelpR::theme_microsoft() +
+      ggplot2::geom_col() + HelpR::theme_microsoft() +
       ggplot2::scale_x_date(date_breaks = "1 months", date_labels = "%d-%b") +
       ggplot2::theme(legend.position = "none",
-                     axis.text.x = element_text(size = 7.5, angle = 45, hjust = 0.9),
-                     axis.ticks.x.bottom = element_line(size = 0.3),
-                     panel.grid = element_blank(),
-                     panel.border = element_rect(color = "black", fill = NA, size = 0.3)) +
-      ggplot2::labs(title = "", x = NULL, y = "Number of Posts") +
+                     axis.text.x = ggplot2::element_text(size = 7.5, angle = 45, hjust = 0.9),
+                     axis.ticks.x.bottom = ggplot2::element_line(size = 0.3),
+                     panel.grid = ggplot2::element_blank(),
+                     panel.border = ggplot2::element_rect(color = "black", fill = NA, size = 0.3)) +
+      ggplot2::labs(title = "",  x = NULL, y = "Number of Posts") +
       ggplot2::facet_wrap(~facet_var, nrow = nrow)
-
     print(plot)
+  }
+  else if (plot_type == "list") {
+    data <- data %>%
+      dplyr::mutate(plot_date = lubridate::floor_date(!!date_sym, unit = unit), facet_var = !!group_sym)
 
+    unique_groups <- data %>%
+      dplyr::pull(!!group_sym) %>%
+      unique()
 
-  } else if (plot_type == "list") {
-    data <- data %>% dplyr::mutate(plot_date = lubridate::floor_date(!!date_sym, unit = unit),
-                                   facet_var = !!group_sym)
-
-    unique_groups <- data %>% pull(!!group_sym) %>% unique()
     plots <- list()
-
     for (group in unique_groups) {
       plot <- data %>%
         dplyr::filter(!!group_sym == group) %>%
-        dplyr::count(plot_date) %>%
-        ggplot2::ggplot(ggplot2::aes(x = plot_date, y = n)) +
+        dplyr::count(plot_date) %>% ggplot2::ggplot(ggplot2::aes(x = plot_date, y = n)) +
         ggplot2::geom_col(fill = colour_mapping[group]) +
         HelpR::theme_microsoft() +
         ggplot2::scale_x_date(date_breaks = "1 months", date_labels = "%d-%b") +
         ggplot2::theme(legend.position = "none",
-                       axis.text.x = element_text(angle = 45),
-                       panel.grid = element_blank()) +
-        ggplot2::labs(title = paste("Topic Volume over Time -", group), x = NULL, y = "Number of Posts")
-
+                       axis.text.x = ggplot2::element_text(angle = 45),
+                       panel.grid = ggplot2::element_blank()) +
+        ggplot2::labs(title = paste("Topic Volume over Time -",
+                                    group), x = NULL, y = "Number of Posts")
       plots[[group]] <- plot
     }
     return(plots)
-
-  } else {
+  }
+  else {
     stop("Invalid plot_type argument. Try 'facet' or 'list'.")
   }
 }

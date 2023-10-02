@@ -24,5 +24,6 @@ A data frame with sentiment distribution counts across each of the group variabl
 count_group_sentiment
 }
 \examples{
+sentiment_percentages <- (data = data, group_var = audience, sentiment_var = sentiment)
 count_group_sentiment(data = data, group_var = audience, sentiment_var = sentiment)
 }

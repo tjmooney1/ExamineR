@@ -18,19 +18,22 @@ plot_token_counter <- function(data = data,
                                fill = "") {
 
   library(tidyverse)
+
   text_var <- data %>%
     dplyr::select({{text_var}})
 
   stop_words <- tm::stopwords(kind = "smart")
 
-  tokens <- strsplit(tolower({{text_var}}), "\\W+")
+  tokens <- strsplit(str_to_upper({{text_var}}), "\\W+")
 
   freq_data <- data.frame(token = unlist(tokens), stringsAsFactors = FALSE)
   freq_data <- transform(freq_data, token = gsub("[[:punct:]]", "", token))
   freq_data <- data.frame(table(freq_data$token))
 
   freq_data <- freq_data[order(-freq_data$Freq), ]
-  freq_data <- freq_data %>% dplyr::filter(!Var1 %in% stop_words) %>%
+
+  freq_data <- freq_data %>%
+    dplyr::filter(!Var1 %in% stop_words) %>%
     dplyr::rename(token = Var1)
 
   # create the tokens plot
