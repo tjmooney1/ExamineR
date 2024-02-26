@@ -14,19 +14,17 @@
 plot_group_sentiment <- function(data = data,
                                  group_var = topic,
                                  sentiment_var = sentiment,
-                                 colours = sentiment_colours) {
+                                 colours = NULL) {
 
-  library(tidyverse)
+  if (is.null(colours)) {
+    sentiment_colours <- c("NEGATIVE" = "#8b0000",
+                           "NEUTRAL" = "#D3D0C9",
+                           "POSITIVE" = "#008b00")
+  } else {
+    sentiment_colours <- colours
+  }
 
-  if(colours) {
-  sentiment_colours <- colours
-  }
-  else {
-  sentiment_colours <- c("NEGATIVE" = "#8b0000",
-                         "NEUTRAL" = "#D3D0C9",
-                         "POSITIVE" = "#008b00")
-  }
-  data %>%
+  plot <- data %>%
     dplyr::count({{group_var}}, {{sentiment_var}}) %>%
     dplyr::add_count({{group_var}}, wt = n) %>%
     dplyr::mutate(percent = n / nn * 100) %>%
@@ -42,4 +40,6 @@ plot_group_sentiment <- function(data = data,
                    panel.grid = ggplot2::element_blank()) +
     ggplot2::labs(fill = NULL, y = NULL, x = "Groups") +
     ggplot2::scale_fill_manual(values = sentiment_colours)
+
+return(plot)
 }
