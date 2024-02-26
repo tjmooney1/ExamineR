@@ -18,7 +18,6 @@ freq_authors_splits <- function(data = data,
                                 url_var = url_var,
                                 n = n){
 
-  library(tidyverse)
   author_counts <- data %>%
     dplyr::count({{author_var}}, sort = TRUE)
   author_counts_sort <- author_counts %>%
@@ -31,5 +30,5 @@ freq_authors_splits <- function(data = data,
     dplyr::select({{text_var}}, {{author_var}}, {{url_var}}) %>%
     dplyr::group_split({{author_var}})
 
-  base::return(high_freq_authors)
+  return(high_freq_authors)
 }

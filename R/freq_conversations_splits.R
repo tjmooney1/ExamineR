@@ -20,9 +20,9 @@ freq_conversations_splits <- function(data = data,
                                       date = date,
                                       n = n){
 
-  library(tidyverse)
   conversation_counts <- data %>%
     dplyr::count({{conversation_id}}, sort = TRUE)
+
   conversation_counts_sort <- conversation_counts %>%
     dplyr::slice_max(order_by = n, n = n) %>%
     dplyr::pull({{conversation_id}}) %>%
@@ -33,5 +33,5 @@ freq_conversations_splits <- function(data = data,
     dplyr::select({{text_var}}, {{conversation_id}}, {{url_var}}, {{date}}) %>%
     dplyr::group_split({{conversation_id}})
 
-  base::return(high_freq_conversations)
+  return(high_freq_conversations)
 }

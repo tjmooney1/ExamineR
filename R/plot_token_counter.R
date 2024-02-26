@@ -11,14 +11,11 @@
 #'
 #' @examples
 #' plot_token_counter(data = data, text_var = message, n = 10, text_size = 15, fill = "steelblue")
-plot_token_counter <- function(data = data,
-                               text_var = text_var,
-                               n = n,
-                               text_size = text_size,
+plot_token_counter <- function(data,
+                               text_var,
+                               n,
+                               text_size,
                                fill = "") {
-
-  library(tidyverse)
-
   text_var <- data %>%
     dplyr::select({{text_var}})
 
@@ -37,7 +34,7 @@ plot_token_counter <- function(data = data,
     dplyr::rename(token = Var1)
 
   # create the tokens plot
-  freq_data %>%
+plot <-   freq_data %>%
     dplyr::slice_head(n = {{n}}) %>%
     ggplot2::ggplot(ggplot2::aes(x = stats::reorder(token, Freq), y = Freq)) +
     ggplot2::geom_bar(stat = "identity", fill = fill) +
@@ -45,4 +42,6 @@ plot_token_counter <- function(data = data,
     ggplot2::coord_flip() +
     ggplot2::theme_minimal() +
     ggplot2::theme(text = element_text(colour = "black", size = {{text_size}}))
+
+return(plot)
 }
