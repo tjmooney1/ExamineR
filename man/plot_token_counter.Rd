@@ -4,13 +4,7 @@
 \alias{plot_token_counter}
 \title{plot_token_counter}
 \usage{
-plot_token_counter(
-  data = data,
-  text_var = text_var,
-  n = n,
-  text_size = text_size,
-  fill = ""
-)
+plot_token_counter(data, text_var, n, text_size, fill = "")
 }
 \arguments{
 \item{data}{A tibble or data frame object}

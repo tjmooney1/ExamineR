@@ -8,7 +8,7 @@ plot_group_sentiment(
   data = data,
   group_var = topic,
   sentiment_var = sentiment,
-  colours = sentiment_colours
+  colours = NULL
 )
 }
 \arguments{
