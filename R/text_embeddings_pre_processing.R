@@ -1,5 +1,19 @@
 #' Clean Text Variable Ready for Embedding
 #'
+#' @details
+#' The text_embeddings_pre_processing function is designed to prepare text data for embedding by performing various cleaning steps. #'It is particularly useful for pre-processing text before applying them to any natural language processing (NLP) or transformer model such as those hosted on Hugging Face and similar. The key cleaning steps include:
+#'
+#'- URLs: Removes most forms of URL.
+#' - Hashtags: Removes hashtags.
+#' - Mentions: Removes user mentions.
+#' - Emojis: Removes emojis from text.
+#' - Punctuation: Removes all punctuation.
+#' - Cleaning Digits: Removes any digits found at the very start of documents but not any others.
+#' - Removing Non-English Symbols: Excludes non-English symbols, preserving only alphanumeric characters, punctuation, and spaces.
+#' - Handling Multiple Spaces: Reduces consecutive spaces to a single space, addressing any excess spacing, wile also cleaning any spaces that may start documents.
+#'
+#'The function provides the option to make all texts lower-case by calling to_lower = TRUE, as well as execute all of the above cleaning steps in parallel, by calling in_parallel = TRUE. This is typically performed to leverage multiple CPU cores for efficiency when working with slightly larger data sets with many documents. Overall, this serves as a versatile tool to enhance the quality of textual data before any further analysis or embedding is conducted.
+#'
 #' @param data A tibble or data frame object
 #' @param text_var The text variable or documents to be cleaned for the embedding process
 #' @param to_lower Whether to make text lowercase, the default option is TRUE
@@ -11,11 +25,12 @@
 #' @examples
 #' output <- data %>%
 #' dplyr::mutate(message_cleaned = message) %>%
-#'  text_embeddings_pre_processing(text_var = message_cleaned)
+#'  ExamineR::text_embeddings_pre_processing(text_var = message_cleaned)
 text_embeddings_pre_processing <- function(data,
                                            text_var,
                                            to_lower = TRUE,
                                            in_parallel = FALSE) {
+
   # sort text variable as symbol
   text_sym <- rlang::ensym(text_var)
 
